@@ -26,7 +26,7 @@ public partial class createMeme : System.Web.UI.Page
             {
                 Console.WriteLine("Connecting to MySQL...");
                 conn.Open();
-                string sql = "SELECT * FROM cross_server_keys WHERE uuid='" + userId +"'";
+                string sql = "SELECT users.userName, users.userId, cross_server_keys.email FROM users INNER JOIN cross_server_keys ON users.email = cross_server_keys.email AND cross_server_keys.uuid = '" + userId +"'";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 MySqlDataReader rdr = cmd.ExecuteReader();
@@ -35,18 +35,6 @@ public partial class createMeme : System.Web.UI.Page
                 while (rdr.Read())
                 {
                     currentUserEmail = (string)rdr.GetValue(2);
-                }
-                rdr.Close();
-
-                if (currentUserEmail != null)
-                {
-                    sql = "SELECT users.userName, users.userId FROM users WHERE email='" + currentUserEmail + "'";
-                    cmd = new MySqlCommand(sql, conn);
-                    rdr = cmd.ExecuteReader();
-                }
-
-                while (rdr.Read())
-                {
                     currentUserName = (string)rdr.GetValue(0);
                     currentId = (int)rdr.GetValue(1);
                 }
